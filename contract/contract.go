@@ -3,18 +3,46 @@ package contract
 import (
 	"crypto/ecdsa"
 	"fmt"
+	"github.com/NullpointerW/ethereum-wallet-tool/pkg/tx"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/ethclient"
 	"log"
 )
 
 var (
+	Address       = "0xb342e7d33b806544609370271a8d074313b7bc30"
 	CheckinMethod = "0xe95a644f0000000000000000000000000000000000000000000000000000000000000001"
-	ClaimMethod   = "0x624f82f5000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000111bcf00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000041%s00000000000000000000000000000000000000000000000000000000000000"
+	//ClaimMethod   = "0x624f82f5000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000111bcf00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000041%s00000000000000000000000000000000000000000000000000000000000000"
 )
 
-// SignAddress 使用私钥对以太坊地址进行签名
-func SignAddress(privateKeyHex, msg string) (signatureHex, address string, err error) {
+func CallCheckin(pk string, rpc *ethclient.Client) (common.Hash, error) {
+	txHash, err := tx.Transfer(pk, Address, "0", CKBuffer.Get(), rpc)
+	if err != nil {
+		return common.Hash{}, err
+	}
+	fmt.Println(txHash.String())
+	_, err = tx.WaitForTransactionConfirmation(rpc, txHash)
+	return txHash, err
+}
+
+func CallClaim(pk string, amt, nonce int, sign string, rpc *ethclient.Client) (common.Hash, error) {
+	hb, err := BuildClaimMethod(amt, nonce, sign)
+	if err != nil {
+		return common.Hash{}, err
+	}
+	txHash, err := tx.Transfer(pk, Address, "0", hb, rpc)
+	if err != nil {
+		return common.Hash{}, err
+	}
+	fmt.Println(txHash.String())
+	_, err = tx.WaitForTransactionConfirmation(rpc, txHash)
+	return txHash, err
+}
+
+// SignMessage 使用私钥对消息进行签名
+func SignMessage(privateKeyHex, msg string) (signatureHex, address string, err error) {
 	// 将16进制的私钥字符串解码为ECDSA私钥
 	privateKey, err := crypto.HexToECDSA(privateKeyHex)
 	if err != nil {

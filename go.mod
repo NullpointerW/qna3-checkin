@@ -1,9 +1,9 @@
-module qn3-checkin
+module qna3-checkin
 
 go 1.21.5
 
 require (
-	github.com/NullpointerW/ethereum-wallet-tool v1.1.2
+	github.com/NullpointerW/ethereum-wallet-tool v1.2.4
 	github.com/ethereum/go-ethereum v1.13.5
 )
 
