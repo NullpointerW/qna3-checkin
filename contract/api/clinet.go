@@ -3,7 +3,6 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"qna3-checkin/contract"
@@ -23,7 +22,7 @@ func (p payload) marshal() (io.Reader, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(string(b))
+	//fmt.Println(string(b))
 	return bytes.NewBuffer(b), nil
 }
 
@@ -66,7 +65,7 @@ func NewClient(pk string) (*Client, error) {
 		return nil, err
 	}
 	var readMap map[string]any
-	fmt.Println(string(rb))
+	//fmt.Println(string(rb))
 	err = json.Unmarshal(rb, &readMap)
 	if err != nil {
 		return nil, err

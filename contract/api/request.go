@@ -26,7 +26,7 @@ func (c *Client) Checkin(txh, via string) error {
 		return err
 	}
 	var readMap map[string]any
-	fmt.Println(string(rb))
+	//fmt.Println(string(rb))
 	err = json.Unmarshal(rb, &readMap)
 	if err != nil {
 		return err
@@ -52,7 +52,7 @@ func (c *Client) ClaimStatus() (historyId, amount, nonce int, signature string, 
 		return 0, 0, 0, "", err
 	}
 	var readMap map[string]any
-	fmt.Println(string(rb))
+	//fmt.Println(string(rb))
 	err = json.Unmarshal(rb, &readMap)
 	if err != nil {
 		return 0, 0, 0, "", err
@@ -86,7 +86,7 @@ func (c *Client) ClaimAll(historyId int, signHash string) error {
 		return err
 	}
 	var readMap map[string]any
-	fmt.Println(string(rb))
+	//fmt.Println(string(rb))
 	err = json.Unmarshal(rb, &readMap)
 	if err != nil {
 		return err

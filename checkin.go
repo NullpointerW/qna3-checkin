@@ -65,7 +65,7 @@ func main() {
 func work(pk string, rpc *ethclient.Client, wg *sync.WaitGroup) {
 	defer func() {
 		if r := recover(); r != nil {
-			fmt.Println("checkin failed,Recovered from panic:", r)
+			fmt.Println(pk, "checkin failed,Recovered from panic:", r)
 			wg.Done()
 		}
 	}()

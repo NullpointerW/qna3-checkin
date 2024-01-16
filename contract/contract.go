@@ -18,25 +18,33 @@ var (
 )
 
 func CallCheckin(pk string, rpc *ethclient.Client) (common.Hash, error) {
-	txHash, err := tx.Transfer(pk, Address, "0", CKBuffer.Get(), rpc)
+	data := CKBuffer.Get()
+	defer CKBuffer.Put(data)
+	txHash, err := tx.Transfer(pk, Address, "0", data, rpc)
 	if err != nil {
 		return common.Hash{}, err
 	}
-	fmt.Println(txHash.String())
+	//fmt.Println(txHash.String())
 	_, err = tx.WaitForTransactionConfirmation(rpc, txHash)
 	return txHash, err
 }
 
 func CallClaim(pk string, amt, nonce int, sign string, rpc *ethclient.Client) (common.Hash, error) {
-	hb, err := BuildClaimMethod(amt, nonce, sign)
+	buffer := CLBuffer.Get()
+	defer CLBuffer.Put(buffer)
+	data, err := buffer.Fill(uint32(amt), uint32(nonce), sign)
 	if err != nil {
 		return common.Hash{}, err
 	}
-	txHash, err := tx.Transfer(pk, Address, "0", hb, rpc)
+	//hb, err := BuildClaimMethod(amt, nonce, sign)
 	if err != nil {
 		return common.Hash{}, err
 	}
-	fmt.Println(txHash.String())
+	txHash, err := tx.Transfer(pk, Address, "0", data, rpc)
+	if err != nil {
+		return common.Hash{}, err
+	}
+	//fmt.Println(txHash.String())
 	_, err = tx.WaitForTransactionConfirmation(rpc, txHash)
 	return txHash, err
 }
